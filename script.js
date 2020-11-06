@@ -1,6 +1,9 @@
 var timeEl = document.querySelector("#clock");
 var startButton = document.querySelector("#startButton");
-var secondsLeft = 100;
+var secondsLeft = 10;
+
+var answerList = document.querySelector("#answerList");
+var questionArea = document.querySelector("#questionList");
 
 var questions = [
     {
@@ -21,33 +24,46 @@ var questions = [
     }
 ]
 
+//------------------- COUNTDOWN -------------------
 
 function setTime() {
-    var timerInterval = setInterval(function() {
-      secondsLeft--;
-      timeEl.textContent = secondsLeft;
-  
-      //if(secondsLeft === 0) {
-       // clearInterval(timerInterval);
-      //}
-  
-    }, 1000);
-  }
+    var timerInterval = setInterval(function () {
+        secondsLeft--;
+        timeEl.textContent = secondsLeft;
 
-startButton.addEventListener("click", function() {
+        //if(secondsLeft === 0) {
+        // clearInterval(timerInterval);
+        //}
+
+    }, 1000);
+}
+
+startButton.addEventListener("click", function () {
     setTime()
 });
 
+//------------------- QUIZ -------------------
+
 var currentQuestionIndex = 0;
 
-function displayQuestion(){
+function displayQuestion() {
+    var questionText = document.createElement("p");
+    questionText.textContent = questions[currentQuestionIndex].question;
+    questionArea.appendChild(questionText);
+    for (var i = 0; i < questions[currentQuestionIndex].choices.length; i++) {
 
+        var listOption = document.createElement("li");
+        listOption.textContent = questions[currentQuestionIndex].choices[i];
+        answerList.appendChild(listOption);
+    }
 }
 
-function answerChosen(){
+function answerChosen() {
     //...
     currentQuestionIndex++;
     displayQuestion();
 }
 
-choiceList.addEventListener("click", answerChosen);
+answerList.addEventListener("click", answerChosen);
+
+displayQuestion()
