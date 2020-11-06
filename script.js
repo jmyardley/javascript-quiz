@@ -82,23 +82,12 @@ function gameTimer() {
         timeEl.textContent = "Time Remaining: " + (gameSecondsLeft);
 
         if (gameSecondsLeft === 0){
-            gameOver();
+            clearInterval(gameTimerInterval);
+            timeEl.textContent = "Time's up!";
         }
     }, 1000);
 }
 
-function gameOver() {
-    clearInterval(gameTimerInterval);
-    timeEl.textContent = "Time's up!";
-    
-    questionArea.removeChild(questionArea.childNodes[0]);
-    while (answerList.firstChild) {
-        answerList.removeChild(answerList.lastChild);
-    }
-    var questionText = document.createElement("p");
-    questionText.textContent = "You got " + score + " out of " + questions.length;
-    questionArea.appendChild(questionText);
-}
 
 startButton.addEventListener("click", function () {
     setTime()
@@ -113,13 +102,13 @@ function displayQuestion() {
     while (answerList.firstChild) {
         answerList.removeChild(answerList.lastChild);
     }
-
+    
     var questionText = document.createElement("p");
     questionText.textContent = questions[currentQuestionIndex].question;
     questionArea.appendChild(questionText);
-
+    
     questionNumber.textContent = "Question " + (currentQuestionIndex + 1) + " of " + questions.length;
-
+    
     for (var i = 0; i < questions[currentQuestionIndex].choices.length; i++) {
         var listOption = document.createElement("button");
         listOption.textContent = questions[currentQuestionIndex].choices[i];
@@ -146,8 +135,16 @@ function answerChosen() {
         currentQuestionIndex++;
         displayQuestion();
     } else {
-        gameOver();
-    
+        gameSecondsLeft = 1;
+
+        questionArea.removeChild(questionArea.childNodes[0]);
+        while (answerList.firstChild) {
+            answerList.removeChild(answerList.lastChild);
+        }
+        var questionText = document.createElement("p");
+        questionText.textContent = "You got " + score + " out of " + questions.length;
+        questionArea.appendChild(questionText);
+        
     }
 }
 
