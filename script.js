@@ -105,9 +105,17 @@ function displayQuestion() {
 
 
 function answerChosen() {
-    //...
+    if(parseInt(event.target.id) === questions[currentQuestionIndex].answerIndex){
+        alert("correct");
+    } else {
+        alert("wrong");
+    }
+    if(currentQuestionIndex !== 4){
     currentQuestionIndex++;
     displayQuestion();
+    } else {
+        //...
+    }
 }
 
 //answerList.addEventListener("click", answerChosen);
