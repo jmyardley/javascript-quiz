@@ -64,11 +64,12 @@ function setTime() {
     var timerInterval = setInterval(function () {
         secondsLeft--;
         timeEl.textContent = secondsLeft;
-
-        //if(secondsLeft === 0) {
-        // clearInterval(timerInterval);
-        //}
-
+        
+        if(secondsLeft === 0) {
+            clearInterval(timerInterval);
+            displayQuestion();
+        }
+        
     }, 1000);
 }
 
@@ -85,17 +86,23 @@ function displayQuestion() {
     while(answerList.firstChild){
         answerList.removeChild(answerList.lastChild);
     }
-
+    
     var questionText = document.createElement("p");
     questionText.textContent = questions[currentQuestionIndex].question;
     questionArea.appendChild(questionText);
-
+    
     for (var i = 0; i < questions[currentQuestionIndex].choices.length; i++) {
         var listOption = document.createElement("li");
         listOption.textContent = questions[currentQuestionIndex].choices[i];
         answerList.appendChild(listOption);
+        listOption.setAttribute("id", i.toString());
+        listOption.addEventListener("click", answerChosen);
     }
 }
+
+
+
+
 
 function answerChosen() {
     //...
@@ -103,6 +110,6 @@ function answerChosen() {
     displayQuestion();
 }
 
-answerList.addEventListener("click", answerChosen);
+//answerList.addEventListener("click", answerChosen);
 
-displayQuestion()
+//displayQuestion()
