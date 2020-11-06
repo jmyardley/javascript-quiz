@@ -81,9 +81,10 @@ function gameTimer() {
         gameSecondsLeft--;
         timeEl.textContent = "Time Remaining: " + (gameSecondsLeft);
 
-        if (gameSecondsLeft === 0){
+        if (gameSecondsLeft === 0) {
             clearInterval(gameTimerInterval);
-            timeEl.textContent = "Time's up!";
+            timeEl.textContent = "Game over!";
+            gameOver();
         }
     }, 1000);
 }
@@ -102,13 +103,13 @@ function displayQuestion() {
     while (answerList.firstChild) {
         answerList.removeChild(answerList.lastChild);
     }
-    
+
     var questionText = document.createElement("p");
     questionText.textContent = questions[currentQuestionIndex].question;
     questionArea.appendChild(questionText);
-    
+
     questionNumber.textContent = "Question " + (currentQuestionIndex + 1) + " of " + questions.length;
-    
+
     for (var i = 0; i < questions[currentQuestionIndex].choices.length; i++) {
         var listOption = document.createElement("button");
         listOption.textContent = questions[currentQuestionIndex].choices[i];
@@ -136,16 +137,44 @@ function answerChosen() {
         displayQuestion();
     } else {
         gameSecondsLeft = 1;
+        gameOver();
 
-        questionArea.removeChild(questionArea.childNodes[0]);
-        while (answerList.firstChild) {
-            answerList.removeChild(answerList.lastChild);
-        }
-        var questionText = document.createElement("p");
-        questionText.textContent = "You got " + score + " out of " + questions.length;
-        questionArea.appendChild(questionText);
-        
     }
+}
+
+function gameOver() {
+    questionArea.removeChild(questionArea.childNodes[0]);
+    while (answerList.firstChild) {
+        answerList.removeChild(answerList.lastChild);
+    }
+
+    var questionForm = document.createElement("form");
+    questionArea.appendChild(questionForm);
+    var questionInput = document.createElement("input");
+    questionInput.setAttribute("type", "text");
+    questionInput.setAttribute("placeholder", "Enter your name");
+    questionArea.firstChild.appendChild(questionInput);
+    questionForm.addEventListener("submit", function(event){
+        event.preventDefault();
+        var nameText = questionInput.value.trim();
+        if (nameText === ""){
+            return;
+        }
+        
+        var userScore = {nameText: score};
+       // scores.push(userScore);
+        console.log(userScore);
+        questionInput.value = "";
+    });
+    
+    var scores = {};
+
+}
+
+
+function recordScore(event){
+
+
 }
 
 //answerList.addEventListener("click", answerChosen);
