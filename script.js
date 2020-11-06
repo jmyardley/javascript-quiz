@@ -1,9 +1,11 @@
 var timeEl = document.querySelector("#clock");
 var startButton = document.querySelector("#startButton");
-var secondsLeft = 10;
+var secondsLeft = 5;
+var gameSecondsLeft = 90;
 
 var answerList = document.querySelector("#answerList");
 var questionArea = document.querySelector("#questionList");
+var questionNumber = document.querySelector("#questionNumber");
 
 var questions = [
     {
@@ -63,14 +65,39 @@ var questions = [
 function setTime() {
     var timerInterval = setInterval(function () {
         secondsLeft--;
-        timeEl.textContent = secondsLeft;
-        
-        if(secondsLeft === 0) {
+        timeEl.textContent = "Starting In: " + (secondsLeft);
+
+        if (secondsLeft === 0) {
             clearInterval(timerInterval);
             displayQuestion();
+            gameTimer();
         }
-        
+
     }, 1000);
+}
+
+function gameTimer() {
+    var gameTimerInterval = setInterval(function () {
+        gameSecondsLeft--;
+        timeEl.textContent = "Time Remaining: " + (gameSecondsLeft);
+
+        if (gameSecondsLeft === 0){
+            gameOver();
+        }
+    }, 1000);
+}
+
+function gameOver() {
+    clearInterval(gameTimerInterval);
+    timeEl.textContent = "Time's up!";
+    
+    questionArea.removeChild(questionArea.childNodes[0]);
+    while (answerList.firstChild) {
+        answerList.removeChild(answerList.lastChild);
+    }
+    var questionText = document.createElement("p");
+    questionText.textContent = "You got " + score + " out of " + questions.length;
+    questionArea.appendChild(questionText);
 }
 
 startButton.addEventListener("click", function () {
@@ -83,16 +110,18 @@ var currentQuestionIndex = 0;
 
 function displayQuestion() {
     questionArea.removeChild(questionArea.childNodes[0]);
-    while(answerList.firstChild){
+    while (answerList.firstChild) {
         answerList.removeChild(answerList.lastChild);
     }
-    
+
     var questionText = document.createElement("p");
     questionText.textContent = questions[currentQuestionIndex].question;
     questionArea.appendChild(questionText);
-    
+
+    questionNumber.textContent = "Question " + (currentQuestionIndex + 1) + " of " + questions.length;
+
     for (var i = 0; i < questions[currentQuestionIndex].choices.length; i++) {
-        var listOption = document.createElement("li");
+        var listOption = document.createElement("button");
         listOption.textContent = questions[currentQuestionIndex].choices[i];
         answerList.appendChild(listOption);
         listOption.setAttribute("id", i.toString());
@@ -102,19 +131,23 @@ function displayQuestion() {
 
 
 
-
+var score = 0;
 
 function answerChosen() {
-    if(parseInt(event.target.id) === questions[currentQuestionIndex].answerIndex){
+    if (parseInt(event.target.id) === questions[currentQuestionIndex].answerIndex) {
         alert("correct");
+        score++;
+        document.querySelector("#score").textContent = "Score: " + score;
     } else {
         alert("wrong");
+        gameSecondsLeft = gameSecondsLeft - 10;
     }
-    if(currentQuestionIndex !== 4){
-    currentQuestionIndex++;
-    displayQuestion();
+    if (currentQuestionIndex !== (questions.length - 1)) {
+        currentQuestionIndex++;
+        displayQuestion();
     } else {
-        //...
+        gameOver();
+    
     }
 }
 
